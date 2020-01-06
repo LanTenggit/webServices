@@ -33,6 +33,19 @@ namespace WebServicesForOpreateTime
             bool ISTrue = false;
             string msg = "";
             List<ScheduleClass> list = new List<ScheduleClass>();
+            List<ScheduleClass> OprateTimestrlist = new List<ScheduleClass>();
+          
+
+            for (int i = 0; i < Sche.Count(); i++)
+            {
+                ScheduleClass scheduleLength = new ScheduleClass();
+                scheduleLength.Schedule = Sche[i];
+                OprateTimestrlist.Add(scheduleLength);
+            }
+
+
+          
+            string OprateTimestr = "";
             try
             {
                 ////select* from mesinfo t where(t.Schedule like '%YDSY19B27B2P%' or t.Schedule like '%YDSY19B23BAP%');
@@ -45,7 +58,7 @@ namespace WebServicesForOpreateTime
 
 
                 }
-                sqlstr += "t.Schedule  like  '%" + Sche[Sche.Count()-1] + "%')";
+                sqlstr += "t.Schedule  like  '%" + Sche[Sche.Count()-1] + "%')   ORDER BY Operating_Time";
 
                 DataTable DTSchedule = DBHLpter.GetDataTable(sqlstr);
 
@@ -58,14 +71,49 @@ namespace WebServicesForOpreateTime
                     msg = "数据获取成功";
                     list.Add(Schedule);
                     ISTrue = true;
+                   
                 }
+
+               ///根据值的顺序排序
+                for (int i = 0; i < Sche.Length ; i++)
+                {
+                        for (int j = 0; j < list.Count; j++)
+                        {
+                            if (Sche[i] == list[j].Schedule)
+                            {
+                                OprateTimestrlist[i].OprateTime = list[j].OprateTime ;
+                                j = list.Count();
+                                //continue;
+                            }
+                            else
+                            {
+                                OprateTimestrlist[i].OprateTime= " null";
+                            }
+                        }
+                }
+
+                for (int i = 0; i < OprateTimestrlist.Count; i++)
+                {
+                    if (i< OprateTimestrlist.Count-1)
+                    {
+                        OprateTimestr += OprateTimestrlist[i].OprateTime + ",";
+                    }
+                    else
+                    {
+                        OprateTimestr += OprateTimestrlist[i].OprateTime;
+                    }
+
+                
+                }
+
+
             }
             catch (Exception ex)
             {
                 msg = ex.ToString();
                 ISTrue = false;
             }
-            string json = JsonConvert.SerializeObject(new { ISTrue = ISTrue, Msg = msg, list = list });
+            string json = JsonConvert.SerializeObject(new { ISTrue = ISTrue, Msg = msg, OprateTime = OprateTimestr});
             HttpContext.Current.Response.ContentType = "text/html;charset=utf-8";
             HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.GetEncoding("utf-8"); //设置输出流为简体中文
             HttpContext.Current.Response.Write(json);
