@@ -81,7 +81,7 @@ namespace WebServicesForOpreateTime
                         {
                             if (Sche[i] == list[j].Schedule)
                             {
-                                OprateTimestrlist[i].OprateTime = list[j].OprateTime ;
+                                OprateTimestrlist[i].OprateTime =Convert.ToDateTime( list[j].OprateTime).ToString("yyyy-MM-dd HH:mm:ss") ;
                                 j = list.Count();
                                 //continue;
                             }
@@ -96,11 +96,11 @@ namespace WebServicesForOpreateTime
                 {
                     if (i< OprateTimestrlist.Count-1)
                     {
-                        OprateTimestr += OprateTimestrlist[i].OprateTime + ",";
+                        OprateTimestr += Convert.ToDateTime( OprateTimestrlist[i].OprateTime).ToString("yyyy-MM-dd HH:mm:ss") + ",";
                     }
                     else
                     {
-                        OprateTimestr += OprateTimestrlist[i].OprateTime;
+                        OprateTimestr += Convert.ToDateTime( OprateTimestrlist[i].OprateTime).ToString("yyyy-MM-dd HH:mm:ss");
                     }
 
                 
