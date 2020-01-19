@@ -16,55 +16,18 @@ namespace WebServicesForOpreateTime
         {
 
             string url = "http://10.114.130.182:8082/MTSC/ExternalApplyController";
+            
+            url = "    http://10.114.137.76:8087/OperateTimeService.asmx/GetData";
+            //string postDataStr = "";
+            //        HttpPost(url, postDataStr);
 
-
-  //          {
-  //              "dName": "Automation",
-  //"oName": "接口测试",
-  //"mtID": "3",
-  //"mtName": "生产物料",
-  //"oMbelongDepartmentV": "1",
-  //"oMbelongDepartmentN": "Automation",
-  //"oIsReturn": "0",
-  //"oIsleave": "0",
-  //"oPredictReturnTime": "2020-01-10",
-  //"oCarryUserName": "喻振涛/694217",
-  //"gdID": "5",
-  //"oPredictGdName": "四楼安检岗",
-  //"oDestination": "二楼",
-  //"oRemarks": "API 测试",
-  //"oCause": "API 测试",
-  //"oNum": "100",
-  //"TBNum": "3",
-  //"NPS": "0",
-  //"oPreOutputTime": "2019-12-30",
-  //"Ex1": [
-  //  "90019944","90075733"
-  //],
-  //"Ex2": [
-  //  "90019944"
-  //],
-  //"Ex3": [
-  //  "90019944"
-  //],
-  //"Ex4": [
-  //  "90019944"
-  //],
-  //"uAccount": "90019944",
-  //"uName": "张三",
-  //"rowList": [
-  //  ["1","2","3"],
-  //  ["4","5","6"]
-  //]
-//}
-
-
-    string postDataStr = "";
-            HttpPost(url, postDataStr);
-
-            postDataStr= RestClient.Post("",url);
-
-
+            //        postDataStr= RestClient.Post("",url);
+         
+                string a = HttpPost(url, "Schedulestr=YDSY19B27B2P,YD8Y19B0998A");
+                string b = a;
+          
+        
+           
         }
 
 
@@ -130,7 +93,40 @@ namespace WebServicesForOpreateTime
 
 
         }
-       
+
+
+        private string HttpPostNew(string Url, string postDataStr)
+        {
+            //string post_string = Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(postDataStr));  
+            byte[] postBytes = Encoding.GetEncoding("utf-8").GetBytes(postDataStr);
+            HttpWebRequest request = WebRequest.Create(Url) as HttpWebRequest;//(HttpWebRequest)WebRequest.Create(Url);  
+            request.Method = "POST";
+            //request.ContentType = "application/x-www-form-urlencoded";  
+            request.ContentType = "application/json";
+
+            request.ContentLength = postBytes.Length;//Encoding.UTF8.GetByteCount(post_string);  
+                                                     // request.CookieContainer = cookie;  
+
+            Stream myRequestStream = request.GetRequestStream();
+            //StreamWriter myStreamWriter = new StreamWriter(myRequestStream, Encoding.GetEncoding("utf-8"));             
+            //myStreamWriter.Write(post_string);  
+            //myStreamWriter.Close();  
+
+
+            myRequestStream.Write(postBytes, 0, postBytes.Length);
+            myRequestStream.Close();
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            //response.Cookies = cookie.GetCookies(response.ResponseUri);  
+            Stream myResponseStream = response.GetResponseStream();
+            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.GetEncoding("utf-8"));
+            string retString = myStreamReader.ReadToEnd();
+            myStreamReader.Close();
+            myResponseStream.Close();
+
+            return retString;
+        }
     }
 
 
