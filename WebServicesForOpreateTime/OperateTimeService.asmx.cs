@@ -62,27 +62,30 @@ namespace WebServicesForOpreateTime
 
                 DataTable DTSchedule = DBHLpter.GetDataTable(sqlstr);
 
-                foreach (DataRow item in DTSchedule.Rows)
+                if (DTSchedule.Rows.Count>0)
                 {
+                  foreach (DataRow item in DTSchedule.Rows)
+                  {
                     ScheduleClass Schedule = new ScheduleClass();
                     Schedule.ID = Convert.ToInt32(item["ID"].ToString());
                     Schedule.Schedule = item["Schedule"].ToString().Split('-')[0];
                     Schedule.OprateTime = item["Operating_Time"].ToString();
-                    msg = "数据获取成功";
                     list.Add(Schedule);
                     ISTrue = true;
                    
-                }
+                  }
 
-               ///根据值的顺序排序
-                for (int i = 0; i < Sche.Length ; i++)
-                {
+                   ///根据值的顺序排序
+                   for (int i = 0; i < Sche.Length ; i++)
+                   {
                         for (int j = 0; j < list.Count; j++)
                         {
                             if (Sche[i] == list[j].Schedule)
                             {
+                                msg = "数据获取成功";
                                 OprateTimestrlist[i].OprateTime =Convert.ToDateTime( list[j].OprateTime).ToString("yyyy-MM-dd HH:mm:ss") ;
                                 j = list.Count();
+                               
                                 //continue;
                             }
                             else
@@ -90,20 +93,29 @@ namespace WebServicesForOpreateTime
                                 OprateTimestrlist[i].OprateTime= " null";
                             }
                         }
-                }
+                   }
 
-                for (int i = 0; i < OprateTimestrlist.Count; i++)
-                {
+                  for (int i = 0; i < OprateTimestrlist.Count; i++)
+                  {
                     if (i< OprateTimestrlist.Count-1)
                     {
-                        OprateTimestr += Convert.ToDateTime( OprateTimestrlist[i].OprateTime).ToString("yyyy-MM-dd HH:mm:ss") + ",";
+                        OprateTimestr += OprateTimestrlist[i].OprateTime + ",";
                     }
                     else
                     {
-                        OprateTimestr += Convert.ToDateTime( OprateTimestrlist[i].OprateTime).ToString("yyyy-MM-dd HH:mm:ss");
+                        OprateTimestr +=  OprateTimestrlist[i].OprateTime;
                     }
 
                 
+                  }
+
+                }
+                else
+                {
+
+                    ISTrue = false;
+                    msg = "未查询到数据！";
+                    OprateTimestr = null;
                 }
 
 
